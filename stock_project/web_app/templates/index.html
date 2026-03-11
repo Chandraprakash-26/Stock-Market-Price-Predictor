@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Prediction</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+			
+			
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-size: 1.5rem;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result h5 {
+            margin: 10px 0;
+        }
+        .result .fas {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+        .result .buy {
+            color: #28a745;
+        }
+        .result .sell {
+            color: #dc3545;
+        }
+        .result .hold {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header text-center">
+                Stock Price Prediction
+            </div>
+            <div class="card-body">
+                <form method="post" action="/">
+                    <div class="form-group">
+                        <label for="stock_symbol">Select a stock</label>
+                        <select class="form-control" id="stock_symbol" name="stock_symbol">
+                            <option value="" disabled selected>Select a stock</option>
+                            {% for symbol, name in stock_dict.items() %}
+                                <option value="{{ symbol }}" {% if symbol == stock_symbol %}selected{% endif %}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="custom_ticker">Or enter a custom ticker symbol</label>
+                        <input type="text" class="form-control" id="custom_ticker" name="custom_ticker" placeholder="e.g., GOOG">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Predict</button>
+                </form>
+                {% if last_close_price %}
+                    <hr>
+                    <div class="result text-center">
+                        <h5><i class="fas fa-chart-line"></i> Current Close Price: {{ last_close_price }}</h5>
+                        <h5><i class="fas fa-chart-pie"></i> Predicted Close Price for Tomorrow: {{ predicted_price }}</h5>
+                        <h5 class="{% if recommendation == 'Buy' %}buy{% elif recommendation == 'Sell' %}sell{% else %}hold{% endif %}">
+                            <i class="fas {% if recommendation == 'Buy' %}fa-thumbs-up{% elif recommendation == 'Sell' %}fa-thumbs-down{% else %}fa-hand-paper{% endif %}"></i>
+                            Recommendation: {{ recommendation }}
+                        </h5>
+                    </div>
+                {% elif error %}
+                    <hr>
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
